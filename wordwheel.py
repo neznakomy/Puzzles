@@ -1,7 +1,7 @@
 # Project A - WORD WHEEL
 # checks a simple list of English words (words.py, suitable enough for testing)
 # and finds words in can make using user-specified 9 letters.  One of the
-# 9 letters is a must-have in every valid word.  Version 1 with no frills...   
+# 9 letters is a must-have in every valid word.  Version 1 with no frills...
 
 import os
 from words import words
@@ -30,10 +30,12 @@ def get_other_letters(main_letter, other_letters, letters_list):
     return other_letters, letters_list
 
 def display_wordwheel(main_letter, letters_list):
-    print(f'\nThe main letter is {main_letter} and the list of all different letters is: {letters_list}')
+    cls()
+    print(f'\nOK, the main letter is {main_letter} and the list of all different letters is: {letters_list}')
 
 def get_check_word(main_letter, other_letters, letters_list):
     total_word_count = valid_word_count = 0
+    min_letters = 3
     matching_words = []
     must_have = main_letter[0]
     long_word = ''
@@ -41,22 +43,18 @@ def get_check_word(main_letter, other_letters, letters_list):
     for word in words:
         word = word.upper()
         total_word_count += 1
-        tmp = {}
+        tmp = {}    #  for each candidate word we will keep count of letter usage
         contains_invalid = False
         if must_have in word:
             for i in word:
                 if i in letters_list:
-                    if i not in tmp:
-                        tmp[i] = 1
-                    elif tmp[i] < other_letters[i]:
-                        tmp[i] += 1
+                    tmp[i] = 1 if i not in tmp else tmp[i] + 1  # update letters counts
+                    if tmp[i] > other_letters[i]:  # trap too many uses of allowed letters
+                        contains_invalid = True
                 else:
                     contains_invalid = True
-            if contains_invalid is False and len(tmp) > 2:
-                if len(word) == 9:
-                    long_word = ' * this is the 9-letter word!'
-                else:
-                    long_word = ' '
+            if contains_invalid is False and len(word) >= min_letters:  # minimum of 3 letters
+                long_word = ' ' if len(word) != 9 else ' * this is a 9-letter word!'
                 print(word, long_word)
                 matching_words.append(word)
                 valid_word_count += 1
