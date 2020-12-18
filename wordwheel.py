@@ -18,8 +18,8 @@ def get_main_letter(main_letter):
     return main_letter
 
 def get_other_letters(main_letter, other_letters, letters_list):
-    other_letters[main_letter[0]] = 1
-    letters_list.append(main_letter[0])
+    other_letters[main_letter[0]] = 1        # add the main letter to the counts
+    letters_list.append(main_letter[0])      # add the main letter to the letters list
     for x in range(8):
         letter = input('\nPlease enter the other 8 letters that must exist in every word: ').upper()
         if letter not in other_letters:
@@ -39,7 +39,7 @@ def get_check_word(main_letter, other_letters, letters_list):
     matching_words = []
     must_have = main_letter[0]
     long_word = ''
-    print('\nChecking for words that match...')
+    print('\nChecking for words that match...\n')
     for word in words:
         word = word.upper()
         total_word_count += 1
@@ -54,22 +54,35 @@ def get_check_word(main_letter, other_letters, letters_list):
                 else:
                     contains_invalid = True
             if contains_invalid is False and len(word) >= min_letters:  # minimum of 3 letters
-                long_word = ' ' if len(word) != 9 else ' * this is a 9-letter word!'
-                print(word, long_word)
+                long_word = ' ' if len(word) != 9 else ' * 9-letter word!'
+                word += long_word
                 matching_words.append(word)
                 valid_word_count += 1
+    display_solution_list(matching_words)
     print(f'\nLocated {valid_word_count} words out of a total dictionary of {total_word_count} words')
-    return matching_words
+
+def display_solution_list(matching_words):
+    words_per_line = 4
+    super_string = ''
+    running_word_count = 0
+    for word in matching_words:
+        running_word_count += 1
+        super_string += (word.ljust(30))
+        if running_word_count % words_per_line == 0:
+            print(super_string,'\n')
+            running_word_count = 0
+            super_string = ''
+    print(super_string)   # print straggler words!
+    return
 
 def wordwheel():
-    cls()
-    greeting()
-
     main_letter = []
     other_letters = {}
     letters_list = []
     matching_words = []
 
+    cls()
+    greeting()
     get_main_letter(main_letter)
     get_other_letters(main_letter, other_letters, letters_list)
     display_wordwheel(main_letter, letters_list)
